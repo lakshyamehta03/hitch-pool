@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
     res.json({
-        "message": 'Welcome to HitchPool API - http://localhost:3000',
+        "message": 'Welcome to HitchPool API',
     });
 })
 
@@ -50,7 +50,6 @@ app.use((err, req, res, next) => {
  */
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-    console.log(`Welcome to HitchPool API - http://localhost:${PORT}`);
 });
 
 export default app;
