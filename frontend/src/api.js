@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:3000/api';
+const API_BASE = import.meta.env.VITE_API_BASE || 'https://hitch-pool-playground.onrender.com/api';
 
 function getSessionId() {
     let id = localStorage.getItem('hitchpool_session');
