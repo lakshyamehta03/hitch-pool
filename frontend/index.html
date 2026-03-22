@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HitchPool - Matchmaking Playground</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- Top Bar -->
+      <header class="top-bar">
+        <div style="display:flex; align-items:center;">
+            <h1 class="logo">Hitch<span>Pool</span></h1>
+            <div id="persona-tabs" class="tabs-container" style="display:flex; align-items:center; gap:12px;">
+              <!-- Persona Tabs will be injected here -->
+              <button id="add-persona-btn" class="add-tab-btn">+ Add Persona</button>
+              <button id="all-view-btn" class="tab-btn">All View</button>
+            </div>
+        </div>
+      </header>
+
+      <!-- Main Layout -->
+      <main class="layout">
+        <!-- Left Panel: Contextual actions and Intent List -->
+        <aside id="left-panel" class="panel">
+          <div id="left-panel-content">
+             <!-- Dynamic Content (e.g. Add Intent Form, Persona Intents) -->
+          </div>
+        </aside>
+
+        <!-- Center: Interactive Map -->
+        <section id="map-container">
+          <div id="map"></div>
+        </section>
+
+        <!-- Right Panel: Matches -->
+        <aside id="right-panel" class="panel">
+          <div id="right-panel-content">
+            <!-- Matches will appear here -->
+            <p class="empty-state">Select a persona or intent to view matches.</p>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
