@@ -18,6 +18,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(cors({
+    origin: 'https://hitch-pool.vercel.app/',
+}))
+
 app.get('/', (req, res) => {
     res.json({
         "message": 'Welcome to HitchPool API',
