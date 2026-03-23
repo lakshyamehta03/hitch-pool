@@ -143,7 +143,7 @@ export function renderIntentForm(containerId, personaId, callbacks) {
         input.addEventListener('input', (e) => {
             const val = e.target.value;
             activeIndex = -1;
-            if(val.length < 3) { resultsBox.style.display = 'none'; return; }
+            if(val.length < 5) { resultsBox.style.display = 'none'; return; }
             clearTimeout(type === 'pickup' ? pickupTimeout : dropoffTimeout);
             
             resultsBox.style.display = 'block';
@@ -154,9 +154,6 @@ export function renderIntentForm(containerId, personaId, callbacks) {
                     const res = await callbacks.onSearch(val);
                     if(!res || res.length === 0) {
                         resultsBox.innerHTML = '<div style="padding:10px;color:#aaa">No results found</div>';
-                    }
-                    else if (res.length < 5) {
-                        resultsBox.innerHTML = '<div style="padding:10px;color:#aaa">Please enter atleast 5 characters</div>';
                     } else {
                         resultsBox.innerHTML = res.map(r => `<div class="search-item" style="padding:12px; cursor:pointer; border-bottom:1px solid rgba(255,255,255,0.05); transition:background 0.1s;" data-lat="${r.lat}" data-lon="${r.lon}" data-label="${r.label}">${r.label}</div>`).join('');
                         resultsBox.querySelectorAll('.search-item').forEach(el => {
