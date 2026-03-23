@@ -37,7 +37,7 @@ export class IntentService {
             .filter(i => i.personaId === data.personaId && i.status === 'active');
             
         if (personaIntents.length >= 10) {
-            throw new Error('Maximum 10 intents allowed per persona');
+            throw new Error('Maximum 10 rides allowed per persona');
         }
         
         const duplicate = personaIntents.find(i => 
