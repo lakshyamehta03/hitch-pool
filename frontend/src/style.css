@@ -1,15 +1,21 @@
 :root {
-    --bg-dark: #0f0f13;
-    --panel-bg: #1a1a24;
-    --text-light: #f0f0f5;
-    --text-muted: #a0a0b0;
-    --accent: #9d4edd;
-    --accent-hover: #b975f0;
-    --border-color: #2d2d3a;
+    --color-primary: #7c3aed;
+    --bg-dark-1: #0f0b1f;
+    --bg-dark-2: #1a1333;
+    --border-soft: rgba(124, 58, 237, 0.2);
+    --glow-soft: rgba(124, 58, 237, 0.5);
+
+    --text-primary: #f5f3ff;
+    --text-secondary: #a7a6ba;
+    --text-label: rgba(167, 166, 186, 0.7);
+    --radius-md: 16px;
+    --transition-fast: 200ms ease;
 }
 
 html {
-    font-size: 14px; /* Hard lock rem scaling against external device OS settings */
+    font-size: 14px; 
+    scrollbar-color: var(--color-primary) var(--bg-dark-1);
+    scrollbar-width: thin;
 }
 
 * {
@@ -18,22 +24,45 @@ html {
     padding: 0;
 }
 
+/* Custom Scrollbars (WebKit) */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background: rgba(15, 11, 31, 0.5);
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(124, 58, 237, 0.6);
+    border-radius: 8px;
+    transition: background var(--transition-fast);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary);
+}
+
 body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background-color: var(--bg-dark);
-    color: var(--text-light);
+    background: linear-gradient(145deg, var(--bg-dark-1), var(--bg-dark-2));
+    color: var(--text-primary);
     margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     display: flex;
     height: 100vh;
     overflow: hidden;
-    font-size: 16px; /* Base upscale */
+    font-size: 16px;
+    line-height: 1.5;
 }
 
-h1 { font-size: 2.2rem; }
-h2 { font-size: 1.8rem; }
-h3 { font-size: 1.45rem; }
+/* Typography Scale */
+h1 { font-size: 2.2rem; font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); }
+h2 { font-size: 1.6rem; font-weight: 600; letter-spacing: -0.01em; color: var(--text-primary); }
+h3 { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); }
+p { font-size: 1rem; color: var(--text-secondary); font-weight: 400; }
+label { font-size: 0.9rem; font-weight: 500; color: var(--text-label); }
+small { font-size: 0.8rem; color: var(--text-muted); }
 
 /* Input fix */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
 input::-webkit-calendar-picker-indicator {
     filter: invert(1);
     cursor: pointer;
@@ -219,21 +248,68 @@ input:focus, select:focus {
     border-color: var(--accent);
 }
 
-.btn-primary {
-    background: var(--accent);
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    width: 100%;
+.btn-premium {
+    background: rgba(124, 58, 237, 0.1);
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    color: var(--text-primary);
+    padding: 12px 24px;
+    border-radius: var(--radius-md);
     font-weight: 600;
+    font-size: 1.05rem;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: all var(--transition-fast);
+    box-shadow: inset 0 0 10px rgba(124, 58, 237, 0.05);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    outline: none;
+    width: 100%;
     margin-top: 10px;
 }
 
-.btn-primary:hover {
-    background: #b975f0;
+.btn-premium:hover:not(:disabled) {
+    background: rgba(124, 58, 237, 0.2);
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.3), inset 0 0 10px rgba(124, 58, 237, 0.1);
+    transform: translateY(-1px);
+}
+
+.btn-premium:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 0 5px rgba(124, 58, 237, 0.2);
+}
+
+.btn-premium:focus-visible {
+    box-shadow: 0 0 0 2px var(--bg-dark-1), 0 0 0 4px var(--color-primary);
+}
+
+.btn-premium:disabled {
+    cursor: not-allowed;
+    filter: grayscale(0.5);
+}
+
+/* Loading animations */
+.btn-premium.loading {
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+    animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+    0% { box-shadow: 0 0 10px rgba(124, 58, 237, 0.1); }
+    50% { box-shadow: 0 0 25px rgba(124, 58, 237, 0.4); }
+    100% { box-shadow: 0 0 10px rgba(124, 58, 237, 0.1); }
+}
+
+.spinner-neon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(124, 58, 237, 0.2);
+    border-radius: 50%;
+    border-top-color: var(--color-primary);
+    border-right-color: rgba(124, 58, 237, 0.8);
+    animation: spin 0.8s linear infinite;
+    box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
 }
 
 /* Intent Cards */

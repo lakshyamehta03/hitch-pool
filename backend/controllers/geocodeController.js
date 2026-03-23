@@ -3,7 +3,7 @@ import geocodeService from '../services/geocodeService.js';
 export const searchLocation = async (req, res) => {
     try {
         const { q, limit = 5 } = req.query;
-        if (!q || q.length < 3) {
+        if (!q || q.length < 5) {
             return res.json([]);
         }
         const results = await geocodeService.searchLocation(q, limit);

@@ -1,3 +1,6 @@
+import { renderTimePicker } from './TimePicker.js';
+import { renderDatePicker } from './DatePicker.js';
+
 export function renderIntentForm(containerId, personaId, callbacks) {
     const left = document.getElementById(containerId);
     const todayDate = new Date().toISOString().split('T')[0];
@@ -18,42 +21,13 @@ export function renderIntentForm(containerId, personaId, callbacks) {
         <div class="panel-body" style="display:flex; flex-direction:column; gap:20px;">
 
             <div class="form-group">
-                <label style="color:var(--accent); font-size:18px; margin-bottom:6px; display:block;">Date</label>
-                <input 
-                    type="date" 
-                    id="form-date" 
-                    min="${todayDate}" 
-                    value="${todayDate}" 
-                    class="text-input" 
-                    style="
-                        width:100%; 
-                        padding:12px; 
-                        border-radius:8px; 
-                        font-size:1.2rem; 
-                        color:#fff; 
-                        background:rgba(255,255,255,0.08); 
-                        border:1px solid #555;
-                    "
-                />
+                <label style="color:var(--color-primary); font-size:18px; margin-bottom:6px; display:block;">Date</label>
+                <div id="date-picker-root"></div>
             </div>
 
             <div class="form-group">
-                <label style="color:var(--accent); font-size:18px; margin-bottom:6px; display:block;">Time</label>
-                <select 
-                    id="form-time" 
-                    class="text-input" 
-                    style="
-                        width:100%; 
-                        padding:12px; 
-                        border-radius:8px; 
-                        font-size:1.2rem; 
-                        color:#000; 
-                        background:#e0e0e0; 
-                        border:1px solid #555;
-                    "
-                >
-                    ${timeOptions}
-                </select>
+                <label style="color:var(--color-primary); font-size:18px; margin-bottom:6px; display:block;">Time</label>
+                <div id="time-picker-root"></div>
             </div>
             
             <div class="form-group search-widget" style="position:relative;">
@@ -106,7 +80,7 @@ export function renderIntentForm(containerId, personaId, callbacks) {
                 <div id="dropoff-label" style="font-size:1.05rem; margin-top:8px; color:var(--accent); font-weight:bold;"></div>
             </div>
             
-            <button id="submit-intent" class="btn-primary" style="font-size:1.2rem; padding:12px; margin-top:10px;">
+            <button id="submit-intent" class="btn-premium" style="margin-top:10px;">
                 Submit Intent
             </button>
 
@@ -116,7 +90,7 @@ export function renderIntentForm(containerId, personaId, callbacks) {
         </div>
     `;
     
-    let formData = { pickupLat:null, pickupLon:null, pickupLabel:'', dropoffLat:null, dropoffLon:null, dropoffLabel:'' };
+    let formData = { rideDate: todayDate, departureSlot: '06:00', pickupLat:null, pickupLon:null, pickupLabel:'', dropoffLat:null, dropoffLon:null, dropoffLabel:'' };
     let pickupTimeout, dropoffTimeout;
 
     const setupSearch = (type) => {
@@ -133,20 +107,60 @@ export function renderIntentForm(containerId, personaId, callbacks) {
             });
         };
         
+        let activeIndex = -1;
+
+        function highlightSearchItem(items, idx) {
+            items.forEach((item, i) => {
+                if(i === idx) {
+                    item.style.background = 'var(--glow-soft)';
+                    item.scrollIntoView({block:'nearest'});
+                } else {
+                    item.style.background = 'transparent';
+                }
+            });
+        }
+
+        input.addEventListener('keydown', (e) => {
+            const items = resultsBox.querySelectorAll('.search-item');
+            if(e.key === 'ArrowDown') {
+                e.preventDefault();
+                if(items.length===0) return;
+                activeIndex = (activeIndex + 1) % items.length;
+                highlightSearchItem(items, activeIndex);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if(items.length===0) return;
+                activeIndex = (activeIndex - 1 + items.length) % items.length;
+                highlightSearchItem(items, activeIndex);
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if(activeIndex > -1 && items[activeIndex]) items[activeIndex].click();
+            } else if (e.key === 'Escape') {
+                resultsBox.style.display = 'none';
+            }
+        });
+
         input.addEventListener('input', (e) => {
             const val = e.target.value;
+            activeIndex = -1;
             if(val.length < 3) { resultsBox.style.display = 'none'; return; }
             clearTimeout(type === 'pickup' ? pickupTimeout : dropoffTimeout);
+            
+            resultsBox.style.display = 'block';
+            resultsBox.innerHTML = '<div style="padding:10px; color:var(--text-muted);"><span class="spinner" style="width:12px;height:12px;vertical-align:middle;margin-right:8px;border-width:2px;"></span> Searching locations...</div>';
+            
             const to = setTimeout(async () => {
                 try {
                     const res = await callbacks.onSearch(val);
                     if(!res || res.length === 0) {
-                        resultsBox.innerHTML = '<div style="padding:10px;color:#aaa">No results</div>';
+                        resultsBox.innerHTML = '<div style="padding:10px;color:#aaa">No results found</div>';
                     } else {
-                        resultsBox.innerHTML = res.map(r => `<div class="search-item" style="padding:10px; cursor:pointer; border-bottom:1px solid #333;" data-lat="${r.lat}" data-lon="${r.lon}" data-label="${r.label}">${r.label}</div>`).join('');
+                        resultsBox.innerHTML = res.map(r => `<div class="search-item" style="padding:12px; cursor:pointer; border-bottom:1px solid rgba(255,255,255,0.05); transition:background 0.1s;" data-lat="${r.lat}" data-lon="${r.lon}" data-label="${r.label}">${r.label}</div>`).join('');
                         resultsBox.querySelectorAll('.search-item').forEach(el => {
-                            el.onmouseover = () => el.style.background = 'rgba(157, 78, 221, 0.2)';
-                            el.onmouseout = () => el.style.background = 'transparent';
+                            el.onmouseover = () => { 
+                                activeIndex = Array.from(resultsBox.children).indexOf(el);
+                                highlightSearchItem(resultsBox.querySelectorAll('.search-item'), activeIndex);
+                            };
                             el.onclick = () => {
                                 formData[`${type}Lat`] = parseFloat(el.getAttribute('data-lat')); 
                                 formData[`${type}Lon`] = parseFloat(el.getAttribute('data-lon')); 
@@ -157,15 +171,19 @@ export function renderIntentForm(containerId, personaId, callbacks) {
                             };
                         });
                     }
-                    resultsBox.style.display = 'block';
-                } catch(e) {}
-            }, 500);
+                } catch(e) {
+                    resultsBox.innerHTML = '<div style="padding:10px;color:#ff4d4d">Error fetching endpoints.</div>';
+                }
+            }, 300);
             if (type === 'pickup') pickupTimeout = to; else dropoffTimeout = to;
         });
     };
     
     setupSearch('pickup');
     setupSearch('dropoff');
+    
+    renderDatePicker('date-picker-root', todayDate, todayDate, (date) => formData.rideDate = date);
+    renderTimePicker('time-picker-root', '06:00', (time) => formData.departureSlot = time);
     
     document.getElementById('cancel-intent').onclick = callbacks.onCancel;
     
@@ -174,20 +192,45 @@ export function renderIntentForm(containerId, personaId, callbacks) {
         
         const payload = {
             personaId,
-            rideDate: document.getElementById('form-date').value,
-            departureSlot: document.getElementById('form-time').value,
+            rideDate: formData.rideDate,
+            departureSlot: formData.departureSlot,
             ...formData
         };
         
         const btn = document.getElementById('submit-intent');
-        btn.textContent = 'Processing...';
+        
+        const rect = btn.getBoundingClientRect();
+        btn.style.width = rect.width + 'px';
+        btn.style.height = rect.height + 'px';
+        
+        btn.innerHTML = '<span class="spinner-neon"></span> <span>Processing...</span>';
         btn.disabled = true;
+        btn.classList.add('loading');
+        btn.setAttribute('aria-busy', 'true');
         
         try {
-            await callbacks.onSubmit(payload);
+            const minDelay = new Promise(r => setTimeout(r, 1000));
+            const submitProcess = new Promise((resolve, reject) => {
+                setTimeout(async () => {
+                    try { const res = await callbacks.onSubmit(payload); resolve(res); }
+                    catch(e) { reject(e); }
+                }, 20);
+            });
+            await Promise.all([minDelay, submitProcess]);
+            
+            btn.innerHTML = '✓ Success';
+            btn.classList.remove('loading');
+            btn.style.background = 'rgba(76, 175, 80, 0.2)';
+            btn.style.borderColor = 'rgba(76, 175, 80, 0.5)';
+            // Give 400ms for user to soak in the completion explicitly avoiding screen flicker seamlessly.
+            await new Promise(r => setTimeout(r, 400));
         } catch(err) {
-            btn.textContent = 'Submit Intent';
+            btn.innerHTML = 'Submit Intent';
             btn.disabled = false;
+            btn.classList.remove('loading');
+            btn.removeAttribute('aria-busy');
+            btn.style.width = '100%';
+            btn.style.height = 'auto';
         }
     };
 }

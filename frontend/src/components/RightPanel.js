@@ -24,6 +24,7 @@ export function renderMatches(containerId, matchList, state, activePersonaId, on
         let title = '';
         let mySplit = 0, otherSplit = 0;
         let myName = '', otherName = '';
+        let myMins = 0, otherMins = 0;
         
         if (activePersonaId) {
             if (p1.id === activePersonaId) {
@@ -31,11 +32,15 @@ export function renderMatches(containerId, matchList, state, activePersonaId, on
                 myName = p1.name; otherName = p2.name;
                 mySplit = m.splitA?.fraction || 0.5;
                 otherSplit = m.splitB?.fraction || 0.5;
+                myMins = Math.round((m.splitA?.durationSec || 0) / 60) || 'N/A';
+                otherMins = Math.round((m.splitB?.durationSec || 0) / 60) || 'N/A';
             } else {
                 title = `${p1.name}`;
                 myName = p2.name; otherName = p1.name;
                 mySplit = m.splitB?.fraction || 0.5;
                 otherSplit = m.splitA?.fraction || 0.5;
+                myMins = Math.round((m.splitB?.durationSec || 0) / 60) || 'N/A';
+                otherMins = Math.round((m.splitA?.durationSec || 0) / 60) || 'N/A';
             }
         } else {
             // Overview fallback
@@ -43,6 +48,8 @@ export function renderMatches(containerId, matchList, state, activePersonaId, on
             myName = p1.name; otherName = p2.name;
             mySplit = m.splitA?.fraction || 0.5;
             otherSplit = m.splitB?.fraction || 0.5;
+            myMins = Math.round((m.splitA?.durationSec || 0) / 60) || 'N/A';
+            otherMins = Math.round((m.splitB?.durationSec || 0) / 60) || 'N/A';
         }
 
         const detourMins = Math.abs(Math.round(m.detourSec / 60));
@@ -51,9 +58,15 @@ export function renderMatches(containerId, matchList, state, activePersonaId, on
             <div class="match-card match-card-instance" data-match-id="${m.id}">
                 <h3 style="font-size:1.3rem;">Match with ${title}</h3>
                 <p class="intent-loc" style="margin-top:8px;">Detour: ${detourMins} mins extra travel time</p>
-                <div class="split-details" style="margin-top:8px; padding:10px; background:rgba(0,0,0,0.3); border-radius:6px;">
-                    <p style="margin:0; font-size:1rem; color:#fff;"><b>${myName} pays - </b> <span style="color:var(--accent)">${Math.round(mySplit*100)}%</span></p>
-                    <p style="margin:6px 0 0 0; font-size:1rem; color:#fff;"><b>${otherName} pays - </b> <span style="color:var(--accent)">${Math.round(otherSplit*100)}%</span></p>
+                <div class="split-details" style="margin-top:12px; padding:12px; background:rgba(0,0,0,0.3); border-radius:8px; display:flex; flex-direction:column; gap:8px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <p style="margin:0; font-size:1rem; color:#fff;"><b>${myName}</b> pays <span style="color:var(--color-primary)">${Math.round(mySplit*100)}%</span></p>
+                        <span style="color:var(--text-secondary); font-size:0.95rem;">⏱ ${myMins} min</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <p style="margin:0; font-size:1rem; color:#fff;"><b>${otherName}</b> pays <span style="color:var(--color-primary)">${Math.round(otherSplit*100)}%</span></p>
+                        <span style="color:var(--text-secondary); font-size:0.95rem;">⏱ ${otherMins} min</span>
+                    </div>
                 </div>
             </div>
         `;

@@ -1,3 +1,5 @@
+import { openConfirmModal } from './ConfirmModal.js';
+
 export function renderOverviewLeft(containerId, state) {
     const left = document.getElementById(containerId);
     
@@ -36,7 +38,7 @@ export function renderPersonaLeft(containerId, persona, intents, callbacks) {
             <button id="delete-persona-btn" class="tab-btn" style="color:#ff4d4d; border:1px solid #ff4d4d; padding:6px 12px; font-weight:bold;">Delete</button>
         </div>
         <div class="panel-body">
-            <button class="btn-primary" id="add-intent-btn" style="font-size:1.1rem; padding:14px; box-shadow:0 4px 12px rgba(157, 78, 221, 0.4);">+ Add Ride Intent</button>
+            <button class="btn-premium" id="add-intent-btn" style="margin-bottom: 24px;">+ Add Ride Intent</button>
             <div style="margin-top: 24px;">
     `;
     
@@ -63,9 +65,11 @@ export function renderPersonaLeft(containerId, persona, intents, callbacks) {
     
     const delPersonaBtn = document.getElementById('delete-persona-btn');
     if (delPersonaBtn) delPersonaBtn.onclick = () => {
-        if (confirm(`Are you sure you want to delete ${persona.name}?`)) {
-            callbacks.onDeletePersona(persona.id);
-        }
+        openConfirmModal({
+            title: `Delete ${persona.name}?`,
+            description: "Selecting Confirm permanently deletes this persona and unmatches their relationships. This action cannot be undone.",
+            onConfirm: () => callbacks.onDeletePersona(persona.id)
+        });
     };
     
     left.querySelectorAll('.clickable-intent').forEach(card => {
@@ -77,9 +81,11 @@ export function renderPersonaLeft(containerId, persona, intents, callbacks) {
     
     left.querySelectorAll('.delete-intent-btn').forEach(btn => {
         btn.onclick = () => {
-            if(confirm("Delete this ride intent?")) {
-                callbacks.onDeleteIntent(btn.getAttribute('data-id'));
-            }
+            openConfirmModal({
+                title: "Delete Ride Intent?",
+                description: "This intention and all corresponding matches bound exclusively against it will be destroyed structurally.",
+                onConfirm: () => callbacks.onDeleteIntent(btn.getAttribute('data-id'))
+            });
         }
     });
 }
