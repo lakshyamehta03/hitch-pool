@@ -1,3 +1,5 @@
+import { inject } from '@vercel/analytics';
+
 import { state, getIntentsForPersona, getMatchesForPersona } from './state.js';
 import { API } from './api.js';
 import * as mapMod from './map.js';
@@ -6,6 +8,9 @@ import { renderPersonaTabs } from './components/PersonaTabs.js';
 import { renderOverviewLeft, renderPersonaLeft } from './components/LeftPanel.js';
 import { renderIntentForm } from './components/IntentForm.js';
 import { renderMatches } from './components/RightPanel.js';
+
+// Initialize Vercel Web Analytics
+inject();
 
 async function bootstrap() {
     mapMod.initMap();
