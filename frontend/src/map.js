@@ -120,3 +120,14 @@ export function clearFormPins() {
     if (activeFormPins.dropoff) map.removeLayer(activeFormPins.dropoff);
     activeFormPins = { pickup: null, dropoff: null };
 }
+
+export function flyToLocation(lat, lon, zoom = 14) {
+    if (map) {
+        map.flyTo([lat, lon], zoom, {
+            duration: 1.5,
+            easeLinearity: 0.25
+        });
+        
+        if (window._searchPin) { map.removeLayer(window._searchPin); }
+    }
+}

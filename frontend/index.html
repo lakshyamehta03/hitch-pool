@@ -21,6 +21,18 @@
               <button id="all-view-btn" class="tab-btn">All View</button>
             </div>
         </div>
+        
+        <!-- Global Search Toggle -->
+        <div style="display:flex; align-items:center; position:relative;">
+            <button id="global-search-toggle" class="btn-icon-glass" style="width:40px; height:40px; font-size:1.1rem; flex-shrink:0;" title="Search Map">🔍</button>
+            
+            <div id="global-map-search" class="glass-dropdown-overlay" style="position:absolute; top:50px; right:0; width:340px; display:none; flex-direction:column; padding:12px; transform-origin: top right; z-index:2000; transition: transform 0.2s ease, opacity 0.2s ease; opacity:0; transform:scale(0.95);">
+                 <div class="input-glass-wrapper" style="border:none;">
+                      <input type="text" id="map-search-input" class="text-input" placeholder="Search map location..." autocomplete="off" style="width:100%; border:none; background:transparent; padding:10px 14px; font-family:'Inter', sans-serif; font-size:16px; color:var(--text-primary); outline:none;" />
+                 </div>
+                 <div id="map-search-results" class="search-results" style="display:none; max-height:220px; overflow-y:auto; width:100%; margin-top:8px;"></div>
+            </div>
+        </div>
       </header>
 
       <!-- Main Layout -->
