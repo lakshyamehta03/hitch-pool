@@ -28,7 +28,13 @@ export function initMap() {
                         map.removeLayer(activeFormPins[pinMode.type]);
                     }
                     
-                    const m = L.marker([lat, lon]).addTo(map).bindPopup(label).openPopup();
+                    const glassIcon = L.divIcon({
+                        className: 'glass-pin',
+                        html: `<div style="background-color:rgba(124,58,237,0.3); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border:1px solid rgba(124,58,237,0.5); width:20px; height:20px; border-radius:50%; box-shadow:0 0 12px rgba(124,58,237,0.8); display:flex; justify-content:center; align-items:center;"><div style="background:#fff; width:6px; height:6px; border-radius:50%;"></div></div>`,
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
+                    });
+                    const m = L.marker([lat, lon], { icon: glassIcon }).addTo(map).bindPopup(label).openPopup();
                     activeFormPins[pinMode.type] = m;
                     
                     // Reset mode
@@ -61,9 +67,9 @@ export function drawSoloRoute(intent, color) {
         [{lat: intent.pickupLat, lon: intent.pickupLon}, {lat: intent.dropoffLat, lon: intent.dropoffLon}].forEach((wp, idx) => {
             const icon = L.divIcon({
                 className: 'solo-marker',
-                html: `<div style="background-color:${color}; color:white; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-size:0.9rem; font-weight:bold; border:2px solid white; box-shadow:0 2px 4px rgba(0,0,0,0.3);">${idx + 1}</div>`,
-                iconSize: [24, 24],
-                iconAnchor: [12, 12]
+                html: `<div style="background-color:${color}80; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); color:white; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:1rem; font-weight:bold; border:1px solid rgba(255,255,255,0.4); box-shadow:0 4px 10px ${color}80;">${idx + 1}</div>`,
+                iconSize: [28, 28],
+                iconAnchor: [14, 14]
             });
             const marker = L.marker([wp.lat, wp.lon], { icon }).addTo(map);
             markers.push(marker);
@@ -84,9 +90,9 @@ export function drawSharedRoute(geometry, waypointsArray) {
         waypointsArray.forEach((wp, idx) => {
             const icon = L.divIcon({
                 className: 'sequence-marker',
-                html: `<div style="background-color:#9d4edd; color:white; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; font-weight:bold; border:3px solid white; box-shadow:0 3px 6px rgba(0,0,0,0.4);">${idx + 1}</div>`,
-                iconSize: [28, 28],
-                iconAnchor: [14, 14]
+                html: `<div style="background-color:#9d4edd80; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); color:white; border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; font-weight:bold; border:1px solid rgba(255,255,255,0.4); box-shadow:0 4px 12px rgba(157,78,221,0.5);">${idx + 1}</div>`,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16]
             });
             const marker = L.marker([wp.lat, wp.lon], { icon }).addTo(map);
             markers.push(marker);

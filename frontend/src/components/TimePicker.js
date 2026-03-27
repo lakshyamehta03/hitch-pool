@@ -16,12 +16,12 @@ export function renderTimePicker(containerId, defaultTime, onSelect) {
     
     container.innerHTML = `
         <div class="custom-select-wrapper" style="position:relative; width:100%; outline:none;" tabindex="0">
-            <div class="custom-select-trigger" style="padding:12px; border-radius:8px; font-size:1.1rem; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:#fff; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition:var(--transition-fast);">
-                <span>🕒 <span class="selected-text" style="margin-left:8px; font-weight:600;">${selected}</span></span>
+            <div class="custom-select-trigger">
+                <span>🕒 <span class="selected-text" style="margin-left:8px;">${selected}</span></span>
                 <span class="chevron" style="transition:transform 0.2s;">▼</span>
             </div>
-            <div class="custom-select-options fade-scale-in" style="display:none; position:absolute; top:100%; left:0; right:0; max-height:220px; overflow-y:auto; z-index:1000; margin-top:6px; box-shadow:0 12px 40px rgba(0,0,0,0.9); background:linear-gradient(135deg, var(--bg-dark-1), var(--bg-dark-2)); border:1px solid var(--border-soft); border-radius:var(--radius-md);">
-                ${times.map((t, idx) => `<div class="custom-option" data-idx="${idx}" style="padding:12px 16px; cursor:pointer; font-size:1.05rem; font-weight:500; color:var(--text-primary); transition: background 0.1s;">${t}</div>`).join('')}
+            <div class="custom-select-options glass-dropdown-overlay fade-scale-in" style="display:none; position:absolute; top:100%; left:0; right:0; max-height:220px; overflow-y:auto; z-index:1000; margin-top:6px;">
+                ${times.map((t, idx) => `<div class="custom-option" data-idx="${idx}" style="padding:12px 16px; cursor:pointer; font-size:16px; font-family: 'Inter', sans-serif; font-weight:500; color:var(--text-primary); border-bottom:1px solid var(--stitch-glass-border); transition: background 0.1s;">${t}</div>`).join('')}
             </div>
         </div>
     `;

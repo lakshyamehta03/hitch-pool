@@ -13,13 +13,13 @@ export function renderDatePicker(containerId, defaultDateStr, minDateStr, onSele
 
     container.innerHTML = `
         <div class="custom-select-wrapper datepicker-wrapper" style="position:relative; width:100%; outline:none;" tabindex="0">
-            <div class="custom-select-trigger" style="padding:12px; border-radius:8px; font-size:1.1rem; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:#fff; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition:var(--transition-fast);">
-                <span>📅 <span class="selected-text" style="margin-left:8px; font-weight:600;">${defaultDateStr}</span></span>
+            <div class="custom-select-trigger">
+                <span>📅 <span class="selected-text" style="margin-left:8px;">${defaultDateStr}</span></span>
             </div>
-            <div class="custom-select-options fade-scale-in" style="display:none; position:absolute; top:100%; left:0; right:0; z-index:1000; margin-top:6px; box-shadow:0 12px 40px rgba(0,0,0,0.9); background:linear-gradient(135deg, var(--bg-dark-1), var(--bg-dark-2)); border:1px solid var(--border-soft); border-radius:var(--radius-md); padding:16px;">
+            <div class="custom-select-options glass-dropdown-overlay fade-scale-in" style="display:none; position:absolute; top:100%; left:0; right:0; z-index:1000; margin-top:6px; padding:16px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                     <button class="dp-prev" style="background:transparent; border:none; color:var(--text-primary); cursor:pointer; padding:4px 8px; font-weight:bold; font-size:1.2rem; transition:transform 0.1s;">&lt;</button>
-                    <div class="dp-month-year" style="font-weight:600; font-size:1.1rem; color:var(--text-primary);"></div>
+                    <div class="dp-month-year" style="font-weight:600; font-size:1.1rem; color:var(--text-primary); font-family: 'Inter', sans-serif;"></div>
                     <button class="dp-next" style="background:transparent; border:none; color:var(--text-primary); cursor:pointer; padding:4px 8px; font-weight:bold; font-size:1.2rem; transition:transform 0.1s;">&gt;</button>
                 </div>
                 <div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; text-align:center; color:var(--text-secondary); font-size:0.85rem; margin-bottom:8px; font-weight:600;">

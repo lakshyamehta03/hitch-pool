@@ -26,9 +26,12 @@
       <!-- Main Layout -->
       <main class="layout">
         <!-- Left Panel: Contextual actions and Intent List -->
-        <aside id="left-panel" class="panel">
-          <div id="left-panel-content">
-             <!-- Dynamic Content (e.g. Add Intent Form, Persona Intents) -->
+        <aside id="left-panel" class="panel glass-panel">
+          <button id="toggle-left" class="panel-toggle" title="Collapse Panel">◀</button>
+          <div class="panel-content-wrapper">
+            <div id="left-panel-content">
+               <!-- Dynamic Content -->
+            </div>
           </div>
         </aside>
 
@@ -38,10 +41,13 @@
         </section>
 
         <!-- Right Panel: Matches -->
-        <aside id="right-panel" class="panel">
-          <div id="right-panel-content">
-            <!-- Matches will appear here -->
-            <p class="empty-state">Select a persona or intent to view matches.</p>
+        <aside id="right-panel" class="panel glass-panel">
+          <button id="toggle-right" class="panel-toggle" title="Collapse Panel">▶</button>
+          <div class="panel-content-wrapper">
+            <div id="right-panel-content">
+              <!-- Matches will appear here -->
+              <p class="empty-state">Select a persona or intent to view matches.</p>
+            </div>
           </div>
         </aside>
       </main>

@@ -38,9 +38,22 @@ export function renderPersonaTabs(containerId, state, callbacks) {
         addBtn.style.display = 'block';
     };
     
-    const submitForm = () => {
+    const submitForm = async () => {
         const val = input.value.trim();
-        if(val) callbacks.onAddPersona(val);
+        const saveBtn = document.getElementById('save-persona-btn');
+        if(!val || saveBtn.disabled) return;
+        
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span class="spinner-neon" style="width:14px;height:14px;border-width:2px;border-top-color:#fff;"></span>';
+        
+        try {
+            await callbacks.onAddPersona(val);
+        } catch(e) {}
+        
+        if (saveBtn) {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '✓';
+        }
     };
     document.getElementById('save-persona-btn').onclick = submitForm;
     input.onkeypress = (e) => { if (e.key === 'Enter') submitForm(); };

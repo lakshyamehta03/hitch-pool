@@ -25,6 +25,26 @@ async function bootstrap() {
     
     updateTabsUI();
     switchToView('overview');
+    setupPanelToggles();
+}
+
+function setupPanelToggles() {
+    const leftPanel = document.getElementById('left-panel');
+    const rightPanel = document.getElementById('right-panel');
+    const toggleLeft = document.getElementById('toggle-left');
+    const toggleRight = document.getElementById('toggle-right');
+    
+    toggleLeft.onclick = () => {
+        leftPanel.classList.toggle('collapsed');
+        toggleLeft.textContent = leftPanel.classList.contains('collapsed') ? '▶' : '◀';
+        setTimeout(() => window.dispatchEvent(new Event('resize')), 300);
+    };
+    
+    toggleRight.onclick = () => {
+        rightPanel.classList.toggle('collapsed');
+        toggleRight.textContent = rightPanel.classList.contains('collapsed') ? '◀' : '▶';
+        setTimeout(() => window.dispatchEvent(new Event('resize')), 300);
+    };
 }
 
 function updateTabsUI() {

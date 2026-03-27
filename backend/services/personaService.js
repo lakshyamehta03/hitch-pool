@@ -10,6 +10,9 @@ export class PersonaService {
         if (!name || name.trim() === '') {
             throw new Error('Persona name is required');
         }
+        name = name.trim();
+        const existing = Array.from(session.personas.values()).find(p => p.name.toLowerCase() === name.toLowerCase());
+        if (existing) throw new Error('A persona with this exact name already exists.');
         
         if (session.personas.size >= 10) {
             throw new Error('Maximum 10 personas allowed per playground');

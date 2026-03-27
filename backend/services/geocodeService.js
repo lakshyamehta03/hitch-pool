@@ -1,10 +1,10 @@
 export class GeocodeService {
     async searchLocation(query, limit = 5) {
-        const serverCheck = `https://nominatim.openstreetmap.org/status`;
-        console.log(await fetch(serverCheck));
+        // const serverCheck = `https://nominatim.openstreetmap.org/status`;
+        // console.log(await fetch(serverCheck));
         const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=${limit}`;
         const response = await fetch(url, { headers: { 'User-Agent': `HitchPool-App/1.0 (${process.env.CONTACT_EMAIL || ''})` } });
-        console.log(response);
+        // console.log(response);
         
         if (!response.ok) throw new Error('Nominatim rejected search request.');
         const data = await response.json();

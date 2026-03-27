@@ -20,64 +20,44 @@ export function renderIntentForm(containerId, personaId, callbacks) {
         </div>
         <div class="panel-body" style="display:flex; flex-direction:column; gap:20px;">
 
-            <div class="form-group">
-                <label style="color:var(--color-primary); font-size:18px; margin-bottom:6px; display:block;">Date</label>
+            <div class="form-group" style="position:relative; z-index:40;">
+                <label>Date</label>
                 <div id="date-picker-root"></div>
             </div>
 
-            <div class="form-group">
-                <label style="color:var(--color-primary); font-size:18px; margin-bottom:6px; display:block;">Time</label>
+            <div class="form-group" style="position:relative; z-index:30;">
+                <label>Time</label>
                 <div id="time-picker-root"></div>
             </div>
             
-            <div class="form-group search-widget" style="position:relative;">
-                <label style="color:var(--accent); font-size:20px; margin-bottom:6px; display:block;">Pickup Location</label>
-                <div style="display:flex; gap:10px;">
-                    <input 
-                        type="text" 
-                        id="pickup-search" 
-                        class="text-input" 
-                        placeholder="Search address..." 
-                        autocomplete="off" 
-                        style="
-                            flex:1; 
-                            padding:12px; 
-                            border-radius:8px; 
-                            font-size:1.1rem; 
-                            color:#fff; 
-                            background:rgba(255,255,255,0.08); 
-                            border:1px solid #555;
-                        " 
-                    />
-                    <button type="button" id="pin-pickup" class="tab-btn" style="padding:0 16px; font-size:1.4rem;">📍</button>
+            <div class="form-group search-widget" style="position:relative; z-index:20;">
+                <label>Pickup Location</label>
+                <div style="display:flex; gap:10px; align-items:flex-start;">
+                    <div class="input-glass-wrapper" style="position:relative; flex:1; display:flex; align-items:center;">
+                        <input type="text" id="pickup-search" class="text-input" placeholder="Pickup Address..." autocomplete="off" />
+                        <div id="pickup-chip" class="location-chip" style="display:none;">
+                            <span id="pickup-chip-text" class="chip-text"></span>
+                            <span id="pickup-clear" class="chip-clear" title="Remove Location">✕</span>
+                        </div>
+                        <div id="pickup-results" class="search-results glass-dropdown-overlay" style="display:none; max-height:180px; overflow-y:auto; position:absolute; z-index:100; width:100%; top:50px;"></div>
+                    </div>
+                    <button type="button" id="pin-pickup" class="btn-icon-glass" title="Drop Pin on Map">📍</button>
                 </div>
-                <div id="pickup-results" class="search-results" style="display:none; background:#1e1e24; border:1px solid var(--accent); max-height:150px; overflow-y:auto; position:absolute; z-index:100; width:100%; top:80px; border-radius:8px;"></div>
-                <div id="pickup-label" style="font-size:1.05rem; margin-top:8px; color:var(--accent); font-weight:bold;"></div>
             </div>
             
-            <div class="form-group search-widget" style="position:relative;">
-                <label style="color:var(--accent); font-size:20px; margin-bottom:6px; display:block;">Dropoff Location</label>
-                <div style="display:flex; gap:10px;">
-                    <input 
-                        type="text" 
-                        id="dropoff-search" 
-                        class="text-input" 
-                        placeholder="Search address..." 
-                        autocomplete="off" 
-                        style="
-                            flex:1; 
-                            padding:12px; 
-                            border-radius:8px; 
-                            font-size:1.1rem; 
-                            color:#fff; 
-                            background:rgba(255,255,255,0.08); 
-                            border:1px solid #555;
-                        " 
-                    />
-                    <button type="button" id="pin-dropoff" class="tab-btn" style="padding:0 16px; font-size:1.4rem;">📍</button>
+            <div class="form-group search-widget" style="position:relative; z-index:10;">
+                <label>Dropoff Location</label>
+                <div style="display:flex; gap:10px; align-items:flex-start;">
+                    <div class="input-glass-wrapper" style="position:relative; flex:1; display:flex; align-items:center;">
+                        <input type="text" id="dropoff-search" class="text-input" placeholder="Dropoff Address..." autocomplete="off" />
+                        <div id="dropoff-chip" class="location-chip" style="display:none;">
+                            <span id="dropoff-chip-text" class="chip-text"></span>
+                            <span id="dropoff-clear" class="chip-clear" title="Remove Location">✕</span>
+                        </div>
+                        <div id="dropoff-results" class="search-results glass-dropdown-overlay" style="display:none; max-height:180px; overflow-y:auto; position:absolute; z-index:100; width:100%; top:50px;"></div>
+                    </div>
+                    <button type="button" id="pin-dropoff" class="btn-icon-glass" title="Drop Pin on Map">📍</button>
                 </div>
-                <div id="dropoff-results" class="search-results" style="display:none; background:#1e1e24; border:1px solid var(--accent); max-height:150px; overflow-y:auto; position:absolute; z-index:100; width:100%; top:80px; border-radius:8px;"></div>
-                <div id="dropoff-label" style="font-size:1.05rem; margin-top:8px; color:var(--accent); font-weight:bold;"></div>
             </div>
             
             <button id="submit-intent" class="btn-premium" style="margin-top:10px;">
@@ -96,14 +76,35 @@ export function renderIntentForm(containerId, personaId, callbacks) {
     const setupSearch = (type) => {
         const input = document.getElementById(`${type}-search`);
         const resultsBox = document.getElementById(`${type}-results`);
-        const labelBox = document.getElementById(`${type}-label`);
         const pinBtn = document.getElementById(`pin-${type}`);
+        
+        const chip = document.getElementById(`${type}-chip`);
+        const chipText = document.getElementById(`${type}-chip-text`);
+        const chipClear = document.getElementById(`${type}-clear`);
+
+        const showChip = (label) => {
+            input.style.display = 'none';
+            chip.style.display = 'flex';
+            chipText.textContent = label;
+        };
+
+        const clearChip = () => {
+            formData[`${type}Lat`] = null;
+            formData[`${type}Lon`] = null;
+            formData[`${type}Label`] = '';
+            input.value = '';
+            chip.style.display = 'none';
+            input.style.display = 'block';
+            input.focus();
+        };
+
+        chipClear.onclick = clearChip;
         
         pinBtn.onclick = () => {
             callbacks.onStartPin(type, (loc) => {
                 formData[`${type}Lat`] = loc.lat; formData[`${type}Lon`] = loc.lon; formData[`${type}Label`] = loc.label;
-                labelBox.textContent = '✓ Map Pin: ' + loc.label;
-                input.value = '';
+                showChip(loc.label);
+                resultsBox.style.display = 'none';
             });
         };
         
@@ -143,19 +144,19 @@ export function renderIntentForm(containerId, personaId, callbacks) {
         input.addEventListener('input', (e) => {
             const val = e.target.value;
             activeIndex = -1;
-            if(val.length < 5) { resultsBox.style.display = 'none'; return; }
+            if(val.length < 3) { resultsBox.style.display = 'none'; return; }
             clearTimeout(type === 'pickup' ? pickupTimeout : dropoffTimeout);
-            
             resultsBox.style.display = 'block';
             resultsBox.innerHTML = '<div style="padding:10px; color:var(--text-muted);"><span class="spinner" style="width:12px;height:12px;vertical-align:middle;margin-right:8px;border-width:2px;"></span> Searching locations...</div>';
             
             const to = setTimeout(async () => {
                 try {
+                    console.log(val);
                     const res = await callbacks.onSearch(val);
                     if(!res || res.length === 0) {
                         resultsBox.innerHTML = '<div style="padding:10px;color:#aaa">No results found</div>';
                     } else {
-                        resultsBox.innerHTML = res.map(r => `<div class="search-item" style="padding:12px; cursor:pointer; border-bottom:1px solid rgba(255,255,255,0.05); transition:background 0.1s;" data-lat="${r.lat}" data-lon="${r.lon}" data-label="${r.label}">${r.label}</div>`).join('');
+                        resultsBox.innerHTML = res.map(r => `<div class="search-item" style="padding:12px 16px; cursor:pointer; font-size: 16px; border-bottom:1px solid var(--stitch-glass-border); transition:background 0.1s; font-family: 'Inter', sans-serif;" data-lat="${r.lat}" data-lon="${r.lon}" data-label="${r.label}">${r.label}</div>`).join('');
                         resultsBox.querySelectorAll('.search-item').forEach(el => {
                             el.onmouseover = () => { 
                                 activeIndex = Array.from(resultsBox.children).indexOf(el);
@@ -165,9 +166,9 @@ export function renderIntentForm(containerId, personaId, callbacks) {
                                 formData[`${type}Lat`] = parseFloat(el.getAttribute('data-lat')); 
                                 formData[`${type}Lon`] = parseFloat(el.getAttribute('data-lon')); 
                                 formData[`${type}Label`] = el.getAttribute('data-label');
-                                labelBox.textContent = '✓ ' + formData[`${type}Label`];
+                                showChip(formData[`${type}Label`]);
                                 resultsBox.style.display = 'none';
-                                input.value = formData[`${type}Label`];
+                                input.value = '';
                             };
                         });
                     }
